@@ -1,6 +1,6 @@
-
 import 'package:like_button/like_button.dart';
 import 'package:video_test/widget/ilke_buttons.dart';
+import 'package:video_test/widget/portrait.dart';
 import 'package:video_test/widget/video_player.dart';
 
 import '../common/common.dart';
@@ -17,13 +17,20 @@ class Home extends StatefulWidget {
 
 class _HomeState extends AppPageBase<Home> with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  TabItem _currentTab = TabItem.home;
+  Rx<TabItem> _currentTab = Rx(TabItem.home);
   final PageController _pageController = PageController();
+
+  void addListener() {
+    _tabController!.addListener(() {
+      _currentTab.value = TabItem.values[_tabController!.index];
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    addListener();
   }
 
   @override
@@ -46,37 +53,49 @@ class _HomeState extends AppPageBase<Home> with SingleTickerProviderStateMixin {
           labelColor: Colors.transparent,
           indicatorSize: TabBarIndicatorSize.label,
           onTap: (index) {
-            setState(() {
-              _currentTab = TabItem.values[index];
-            });
+            _currentTab.value = TabItem.values[index];
+            // setState(() {
+            //
+            // });
           },
           tabs: [
-            Text(
-              '首页',
-              style: TextStyle(
-                color: _currentTab == TabItem.home ? Colors.amberAccent : Colors.white,
-                fontSize: 32,
-                decoration: TextDecoration.none,
-              ),
-            ),
-            Text(
-              '词汇',
-              style: TextStyle(
-                color: _currentTab == TabItem.words ? Colors.amberAccent : Colors.white,
-                fontSize: 32,
-                decoration: TextDecoration.none,
-              ),
-            ),
+            Obx(() {
+              return Text(
+                '首页',
+                style: TextStyle(
+                  color: _currentTab.value == TabItem.home ? Colors.amberAccent : Colors.white,
+                  fontSize: 32,
+                  decoration: TextDecoration.none,
+                ),
+              );
+            }),
+            Obx(() {
+              return Text(
+                '词汇',
+                style: TextStyle(
+                  color: _currentTab.value == TabItem.words ? Colors.amberAccent : Colors.white,
+                  fontSize: 32,
+                  decoration: TextDecoration.none,
+                ),
+              );
+            }),
           ],
         ),
         actions: [
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 32,
+          GestureDetector(
+            onTap: () {
+              Get.to(()=>Portrait(size: 64, imgUrl: 'assets/image/avatar.jpg'));
+            },
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 32,
+              foregroundImage: AssetImage('assets/image/avatar.jpg'),
+            ),
           ),
         ],
       ),
       body: TabBarView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _tabController,
         children: [
           PageView.builder(
@@ -95,13 +114,22 @@ class _HomeState extends AppPageBase<Home> with SingleTickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        LikeButtons(buttonSize: 100, buttonIcon: Icons.thumb_up, likeCount: 10),
+                        LikeButtons(buttonSize: 100, buttonIcon: Icons.thumb_up, likeCount: 11),
                         SizedBox(width: 80),
-                        LikeButtons(buttonSize: 100, buttonIcon: Icons.thumb_down, likeCount: 10),
+                        LikeButtons(
+                          buttonSize: 100,
+                          buttonIcon: Icons.thumb_down,
+                        ),
                         SizedBox(width: 80),
-                        LikeButtons(buttonSize: 100, buttonIcon: Icons.comment, likeCount: 10),
+                        LikeButtons(
+                          buttonSize: 100,
+                          buttonIcon: Icons.comment,
+                        ),
                         SizedBox(width: 80),
-                        LikeButtons(buttonSize: 100, buttonIcon: Icons.share, likeCount: 10),
+                        LikeButtons(
+                          buttonSize: 100,
+                          buttonIcon: Icons.share,
+                        ),
                       ],
                     ),
                   ),
@@ -109,7 +137,12 @@ class _HomeState extends AppPageBase<Home> with SingleTickerProviderStateMixin {
               );
             },
           ),
-          Container(color: Colors.yellow),
+          // Container(color: Colors.black, child: Icon(Icons.add),),
+          Container(
+            color: Colors.black,
+            child: Image.asset('assets/image/cihui.png',fit:
+              BoxFit.cover,),
+          ),
         ],
       ),
     );

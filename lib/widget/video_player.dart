@@ -130,58 +130,51 @@ class _VideoPlayState extends AppPageBase<VideoPlay> with TickerProviderStateMix
       ),
     );
 
-    Widget videoProgress = Positioned(
-      left: 0,
-      right: 0,
-      child: ProgressBar(
-        progressBarIndicator: ProgressBarIndicator.none,
-        collapsedThumbRadius: 0,
-        expandedThumbColor: Colors.transparent,
-        alignment: ProgressBarAlignment.bottom,
-        expandedThumbRadius: 12,
-        barCapShape: BarCapShape.round,
-        thumbGlowColor: Colors.white.withValues(alpha: 0.5),
-        thumbGlowRadius: 10,
-        backgroundBarColor: Colors.black12,
-        collapsedThumbColor: Colors.white.withValues(alpha: 0.5),
-        collapsedProgressBarColor: Colors.white,
-        collapsedBufferedBarColor: Colors.black12,
-        controller: _controller,
-        progress: _seekPosition,
-        // buffered: videoPlayerController.value.buffered,
-        total: videoPlayerController.value.duration,
-        onSeek: (position) async {
-          _shouldSyncVideoProgress = true;
-          videoPlayerController.seekTo(position);
-        },
-        onChangeStart: (position) {
-          _shouldSyncVideoProgress = false;
-          _controller.stopBarAnimation();
-          videoPlayerController.pause();
-          // logic.videoPlayerController_1.refresh();
-        },
-        onChanged: (position) {
-          if (_timer != null && _timer!.isActive) {
-            _timer?.cancel();
-          }
-          _shouldSyncVideoProgress = false;
-          _seekPosition = position;
-          _controller.barValue = position.inMilliseconds.toDouble() / videoPlayerController.value.duration.inMilliseconds.toDouble();
-          setState(() {});
-        },
-        onChangeEnd: (position) async {
-          _timer = Timer(const Duration(seconds: 3), () {
-            setState(() {
-              isAvailable = false;
-            });
+    Widget videoProgress = ProgressBar(
+      progressBarIndicator: ProgressBarIndicator.none,
+      collapsedThumbRadius: 0,
+      expandedThumbColor: Colors.transparent,
+      alignment: ProgressBarAlignment.bottom,
+      expandedThumbRadius: 12,
+      barCapShape: BarCapShape.round,
+      thumbGlowColor: Colors.white.withValues(alpha: 0.5),
+      thumbGlowRadius: 10,
+      backgroundBarColor: Colors.black12,
+      collapsedThumbColor: Colors.white.withValues(alpha: 0.5),
+      collapsedProgressBarColor: Colors.white,
+      collapsedBufferedBarColor: Colors.black12,
+      controller: _controller,
+      progress: _seekPosition,
+      total: videoPlayerController.value.duration,
+      onSeek: (position) async {
+        _shouldSyncVideoProgress = true;
+        videoPlayerController.seekTo(position);
+      },
+      onChangeStart: (position) {
+        _shouldSyncVideoProgress = false;
+        _controller.stopBarAnimation();
+        videoPlayerController.pause();
+      },
+      onChanged: (position) {
+        if (_timer != null && _timer!.isActive) {
+          _timer?.cancel();
+        }
+        _shouldSyncVideoProgress = false;
+        _seekPosition = position;
+        _controller.barValue = position.inMilliseconds.toDouble() / videoPlayerController.value.duration.inMilliseconds.toDouble();
+        setState(() {});
+      },
+      onChangeEnd: (position) async {
+        _timer = Timer(const Duration(seconds: 3), () {
+          setState(() {
+            isAvailable = false;
           });
-          // _shouldSyncVideoProgress = true;
-          await videoPlayerController.seekTo(position);
-          videoPlayerController.play();
-          _shouldSyncVideoProgress = true;
-          setState(() {});
-        },
-      ),
+        });
+        await videoPlayerController.seekTo(position);
+        videoPlayerController.play();
+        _shouldSyncVideoProgress = true;
+        setState(() {});
+      },
     );
 
     if(!isAvailable){
@@ -194,22 +187,17 @@ class _VideoPlayState extends AppPageBase<VideoPlay> with TickerProviderStateMix
       child: Stack(
         children: [
           videoPlayer,
+          GestureDetector(
+            onTap: () {
+              switchAvailable();
+            },
+          ),
           Align(
             alignment: Alignment.center,
             child: playButton,
           ),
           Align(alignment: Alignment.bottomCenter,child: videoProgress),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            top: 0,
-            child: GestureDetector(
-              onTap: () {
-                switchAvailable();
-              },
-            ),
-          ),
+
         ],
       ),
     );

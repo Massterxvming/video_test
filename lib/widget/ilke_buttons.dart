@@ -3,9 +3,10 @@ import '../common/common.dart';
 class LikeButtons extends StatefulWidget {
   final double buttonSize;
   final IconData buttonIcon;
+  final bool? hasCount;
   final Color? activityColor;
   final Color? normalColor;
-  final int likeCount;
+  final int? likeCount;
 
   const LikeButtons({
     super.key,
@@ -13,7 +14,8 @@ class LikeButtons extends StatefulWidget {
     required this.buttonIcon,
     this.activityColor,
     this.normalColor,
-    required this.likeCount,
+    this.likeCount,
+    this.hasCount,
   });
 
   @override
@@ -38,21 +40,8 @@ class _LikeButtonState extends AppPageBase<LikeButtons> {
         );
       },
       likeCount: widget.likeCount,
-      // countBuilder: (int count, bool isLiked, String text) {
-      //   var color = isLiked ? Colors.deepPurpleAccent : Colors.grey;
-      //   Widget result;
-      //   if (count == 0) {
-      //     result = Text(
-      //       "love",
-      //       style: TextStyle(color: color),
-      //     );
-      //   } else
-      //     result = Text(
-      //       text,
-      //       style: TextStyle(color: color),
-      //     );
-      //   return result;
-      // },
+      isLiked: false,
+      countPostion: CountPostion.bottom,
     );
   }
 }
