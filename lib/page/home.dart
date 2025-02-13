@@ -21,14 +21,27 @@ class _HomeState extends AppPageBase<Home> with SingleTickerProviderStateMixin {
   final PageController _pageController = PageController();
 
   void addListener() {
-    _tabController!.addListener(() {
+    _tabController!.addListener((){
       _currentTab.value = TabItem.values[_tabController!.index];
+      if(_currentTab.value == TabItem.home){
+        if(controller.box.hasData('index')&&_pageController.hasClients){
+          _pageController.jumpToPage(controller.box.read('index'));
+
+        }
+      }
+    });
+
+    _pageController.addListener(() {
+      if(_pageController.hasClients){
+        controller.box.write('index', _pageController.page?.toInt());
+      }
     });
   }
 
   @override
   void initState() {
     super.initState();
+
     _tabController = TabController(length: 2, vsync: this);
     addListener();
   }
@@ -46,7 +59,7 @@ class _HomeState extends AppPageBase<Home> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         forceMaterialTransparency: true,
         title: TabBar(
-          padding: const EdgeInsets.symmetric(horizontal: 200),
+          padding: const EdgeInsets.only(left: 80, right: 32, ),
           controller: _tabController,
           indicator: const BoxDecoration(),
           overlayColor: WidgetStateProperty.all(Colors.transparent),
@@ -64,7 +77,7 @@ class _HomeState extends AppPageBase<Home> with SingleTickerProviderStateMixin {
                 '首页',
                 style: TextStyle(
                   color: _currentTab.value == TabItem.home ? Colors.amberAccent : Colors.white,
-                  fontSize: 32,
+                  fontSize: 16,
                   decoration: TextDecoration.none,
                 ),
               );
@@ -74,7 +87,7 @@ class _HomeState extends AppPageBase<Home> with SingleTickerProviderStateMixin {
                 '词汇',
                 style: TextStyle(
                   color: _currentTab.value == TabItem.words ? Colors.amberAccent : Colors.white,
-                  fontSize: 32,
+                  fontSize: 16,
                   decoration: TextDecoration.none,
                 ),
               );
@@ -84,7 +97,7 @@ class _HomeState extends AppPageBase<Home> with SingleTickerProviderStateMixin {
         actions: [
           GestureDetector(
             onTap: () {
-              Get.to(()=>Portrait(size: 64, imgUrl: 'assets/image/avatar.jpg'));
+              Get.to(()=>Portrait(size: 32, imgUrl: 'assets/image/avatar.jpg'));
             },
             child: CircleAvatar(
               backgroundColor: Colors.white,
@@ -114,20 +127,20 @@ class _HomeState extends AppPageBase<Home> with SingleTickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        LikeButtons(buttonSize: 100, buttonIcon: Icons.thumb_up, likeCount: 11),
-                        SizedBox(width: 80),
+                        LikeButtons(buttonSize: 58, buttonIcon: Icons.thumb_up, likeCount: 11),
+                        SizedBox(width: 32),
                         LikeButtons(
-                          buttonSize: 100,
+                          buttonSize: 58,
                           buttonIcon: Icons.thumb_down,
                         ),
-                        SizedBox(width: 80),
+                        SizedBox(width: 32),
                         LikeButtons(
-                          buttonSize: 100,
+                          buttonSize: 58,
                           buttonIcon: Icons.comment,
                         ),
-                        SizedBox(width: 80),
+                        SizedBox(width: 32),
                         LikeButtons(
-                          buttonSize: 100,
+                          buttonSize: 58,
                           buttonIcon: Icons.share,
                         ),
                       ],

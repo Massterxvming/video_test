@@ -87,7 +87,9 @@ class _VideoPlayState extends AppPageBase<VideoPlay> with TickerProviderStateMix
               child: VideoPlayer(videoPlayerController),
             ),
           )
-        : Center(
+        : Container(
+      color: Colors.black,
+            alignment: Alignment.center,
             child: CircularProgressIndicator(),
           );
 

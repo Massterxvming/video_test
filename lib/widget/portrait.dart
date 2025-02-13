@@ -13,14 +13,16 @@ class Portrait extends StatelessWidget {
       onTap: (){
         Get.back();
       },
-      child: ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
-        child: CircleAvatar(
-          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.07),
-          radius: size,
-          foregroundImage:imageProvider,
+      child:
+      Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(
+            image: AssetImage(imgUrl),
+            fit: BoxFit.contain,
+          ),
         ),
-      ),
+      )
     );
   }
 }
